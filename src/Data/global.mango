@@ -1,0 +1,87 @@
+{
+    -- Param type can be any of the following: range, boolean, option
+    -- [string, string]
+    #base[$name $param_type] = {
+        name: $name
+        type: $param_type
+    }
+
+    -- [string, number[], boolean, boolean]
+    #range[$name $range $single $decimal] = {
+        range: $range
+        single: $single
+        decimal: $decimal
+        param: #base[$name, "range"]
+    }
+
+    -- [string]
+    #boolean[$name] = {
+        param: #base[$name, "boolean"]
+    }
+
+    -- [string, string[], boolean]
+    #option[$name $options $nullable] = {
+        options: $options
+        nullable: $nullable
+        param: #base[$name, "option"]
+    }
+
+    -- Events
+    bridge: [
+        #range["lifetime", [0 600], false, true]
+    ]
+    fluid_lower: [
+        #range["lower", [0 100], false, true]
+    ]
+    fluid_rise: [
+        #range["rise", [0 100], false, true]
+    ]
+    fluid_type: [
+        #option["types", ["lava" "water" "gas"], false]
+    ]
+    faster: [
+        #range["time", [0 60], false, true]
+    ]
+    grow: [
+        #range["grow", [0 40], false, true]
+        #range["time", [0.2 60], false, true]
+    ]
+    laser: [
+        #range["damage", [0 1000], true, false]
+    ]
+    missiles: [
+        #range["spawn_time", [1 60], false, true]
+        #range["duration", [0 1000], false, true]
+        #boolean["destructive"]
+        #range["radius", [0 10], true, true]
+        #range["damage", [0 1000], true, false]
+        #range["velocity", [0 10], true, true]
+    ]
+    moon_jump: [
+        #range["jump", [1 5], true, true]
+        #range["duration", [0 1000], false, true]
+    ]
+    move_to_point: [
+        #range["velocity", [0 15], true, true]
+        #range["acceleration", [0 10], true, true]
+        #range["duration", [0 1000], false, true]
+    ]
+    rotate: [
+        #option["axes", ["x" "y" "z"], true]
+        #range["rotation", [0 360], false, true]
+        #range["velocity", [0.2 15], false, true]
+    ]
+    shrink: [
+        #range["shrink", [0 40], false, true]
+        #range["time", [0.2 60], false, true]
+    ]
+    teleport: []
+    vertical_grow: [
+        #range["grow", [0 40], false, true]
+        #range["time", [0.2 60], false, true]
+    ]
+    vertical_shrink: [
+        #range["shrink", [0 40], false, true]
+        #range["time", [0.2 60], false, true]
+    ]
+}

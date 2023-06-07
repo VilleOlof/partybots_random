@@ -1,0 +1,167 @@
+{
+    "bridge": {
+        "lifetime": {
+            "range": [0, 600],
+            "single": false,
+            "decimal": true
+        }
+    },
+    "fluid_lower": {
+        "lower": {
+            "range": [0, 100],
+            "single": false,
+            "decimal": true
+        }
+    },
+    "fluid_rise": {
+        "rise": {
+            "range": [0, 100],
+            "single": false,
+            "decimal": true
+        }
+    },
+    "fluid_type": {
+        "types": {
+            "options": ["lava", "water", "gas"],
+            "defaultOption": "lava, water, gas",
+            "multipleChoice": true,
+            "nullable": false
+        }
+    },
+    "faster": {
+        "time": {
+            "range": [0, 60],
+            "single": false,
+            "decimal": true
+        }
+    },
+    "grow": {
+        "grow": {
+            "range": [0, 40],
+            "single": false,
+            "decimal": true
+        },
+        "time": {
+            "range": [0.2, 60],
+            "single": false,
+            "decimal": true
+        }
+    },
+    "laser": {
+        "damage": {
+            "range": [0, 1000],
+            "single": true
+        }
+    },
+    "missiles": {
+        "spawn_time": {
+            "range": [1, 60],
+            "single": false,
+            "decimal": true
+        },
+        "duration": {
+            "range": [0, 1000],
+            "single": false,
+            "decimal": true
+        },
+        "destructive": true,
+        "radius": {
+            "range": [0, 10],
+            "single": true,
+            "decimal": true
+        },
+        "damage": {
+            "range": [0, 1000],
+            "single": true
+        },
+        "velocity": {
+            "range": [0, 10],
+            "single": true,
+            "decimal": true
+        }
+    },
+    "moon_jump": {
+        "jump": {
+            "range": [1, 5],
+            "single": true,
+            "decimal": true
+        },
+        "duration": {
+            "range": [0, 1000],
+            "single": false,
+            "decimal": true
+        }
+    },
+    "move_to_point": {
+        "velocity": {
+            "range": [0, 15],
+            "single": true,
+            "decimal": true
+        },
+        "acceleration": {
+            "range": [0, 10],
+            "single": true,
+            "decimal": true
+        },
+        "duration": {
+            "range": [0, 1000],
+            "single": false,
+            "decimal": true
+        }
+    },
+    "rotate": {
+        "axes": {
+            "options": ["x", "y", "z"],
+            "defaultOption": "x, y, z",
+            "multipleChoice": true,
+            "nullable": true
+        },
+        "rotation": {
+            "range": [0, 360],
+            "single": false,
+            "decimal": true
+        },
+        "velocity": {
+            "range": [0.2, 15],
+            "single": false,
+            "decimal": true
+        }
+    },
+    "shrink": {
+        "shrink": {
+            "range": [0, 40],
+            "single": false,
+            "decimal": true
+        },
+        "time": {
+            "range": [0.2, 60],
+            "single": false,
+            "decimal": true
+        }
+    },
+    "teleport": {},
+    "vertical_grow": {
+        "grow": {
+            "range": [0, 40],
+            "single": false,
+            "decimal": true
+        },
+        "time": {
+            "range": [0.2, 60],
+            "single": false,
+            "decimal": true
+        }
+    },
+    "vertical_shrink": {
+        "shrink": {
+            "range": [0, 40],
+            "single": false,
+            "decimal": true
+        },
+        "time": {
+            "range": [0.2, 60],
+            "single": false,
+            "decimal": true
+        }
+    }
+}

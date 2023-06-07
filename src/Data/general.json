@@ -1,0 +1,107 @@
+{
+    "player_health": {
+        "range": [1, 1000]
+    },
+    "health_regen": {
+        "range": [0, 1000],
+        "decimal": true
+    },
+    "player_speed": {
+        "range": [0, 10],
+        "decimal": true
+    },
+    "jump_height": {
+        "range": [0, 10],
+        "decimal": true
+    },
+    "player_size": {
+        "range": [0.2, 8],
+        "decimal": true
+    },
+    "platform_size": {
+        "range": [1, 40],
+        "decimal": true
+    },
+    "platform_vertical_size": {
+        "range": [0.5, 40],
+        "decimal": true
+    },
+    "snow_melting": {
+        "range": [0, 5],
+        "decimal": true
+    },
+    "slime_speed": {
+        "range": [0, 1],
+        "decimal": true
+    },
+    "slime_jump": {
+        "range": [0, 1],
+        "decimal": true
+    },
+    "persistent_platforms": false,
+    "event_time": {
+        "range": [0, 10],
+        "decimal": true
+    },
+    "recipient_percent": {
+        "range": [0, 100]
+    },
+    "start_height": {
+        "range": [1, 95],
+        "decimal": true
+    },
+    "platform_spacing": {
+        "range": [0, 20],
+        "decimal": true
+    },
+    "arena_padding": {
+        "range": [0, 20],
+        "decimal": true
+    },
+    "fluid_speed": {
+        "range": [0, 1]
+    },
+    "fluid_type": {
+        "options": ["lava", "water", "gas"],
+        "defaultOption": "lava",
+        "multipleChoice": true
+    },
+    "fluid_height": {
+        "range": [0, 100],
+        "decimal": true
+    },
+    "lava_damage": {
+        "range": [0, 1000],
+        "decimal": true
+    },
+    "water_damage": {
+        "range": [0, 1000],
+        "decimal": true
+    },
+    "gas_damage": {
+        "range": [0, 1000],
+        "decimal": true
+    },
+    "fire_damage": {
+        "range": [0, 1000],
+        "decimal": true
+    },
+    "fire_heat": {
+        "range": [0, 100],
+        "decimal": true
+    },
+    "fire_radius": {
+        "range": [0.1, 10],
+        "decimal": true
+    },
+    "fire_destructive": false,
+    "heat_damage": {
+        "range": [0, 1000],
+        "decimal": true
+    },
+    "platform_materials": {
+        "options": ["grass", "snow", "slime", "steel", "wood"],
+        "defaultOption": "grass",
+        "multipleChoice": true
+    }
+}

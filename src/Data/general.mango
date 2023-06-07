@@ -1,0 +1,60 @@
+{
+    -- Param type can be any of the following: range, boolean, option
+    -- [string, string]
+    #base[$name $param_type] = {
+        name: $name
+        type: $param_type
+    }
+
+    -- [string, number[], boolean, boolean]
+    #range[$name $range $single $decimal] = {
+        range: $range
+        single: $single
+        decimal: $decimal
+        param: #base[$name, "range"]
+    }
+
+    -- [string]
+    #boolean[$name] = {
+        param: #base[$name, "boolean"]
+    }
+
+    -- [string, string[], boolean]
+    #option[$name $options $nullable] = {
+        options: $options
+        nullable: $nullable
+        param: #base[$name, "option"]
+    }
+
+    -- Events
+    general: [
+        #range["player_health", [1 1000], false, false]
+        #range["health_regen", [0 1000], false, true]
+        #range["player_speed", [0 10], false, true]
+        #range["jump_height", [0 10], false, true]
+        #range["player_size", [0.2 8], false, true]
+        #range["platform_size", [1 40], false, true]
+        #range["platform_vertical_size", [0.5 40], false, true]
+        #range["snow_melting", [0 5], false, true]
+        #range["slime_speed", [0 1], false, true]
+        #range["slime_jump", [0 1], false, true]
+        #boolean["persistent_platforms"]
+        #range["event_time", [0 10], false, true]
+        #range["recipient_percent", [0 100], false, false]
+        #range["start_height", [1 95], false, true]
+        #range["platform_spacing", [0 20], false, true]
+        #range["arena_padding", [0 20], false, true]
+        #range["fluid_speed", [0 1], false, true]
+        #option["fluid_type", ["lava" "water" "gas"], false]
+        #range["fluid_height", [0 100], false, true]
+        #range["lava_damage", [0 1000], false, true]
+        #range["water_damage", [0 1000], false, true]
+        #range["gas_damage", [0 1000], false, true]
+        #range["fire_damage", [0 1000], false, true]
+        #range["fire_heat", [0 100], false, true]
+        #range["fire_radius", [0.1 10], false, true]
+        #boolean["fire_destructive"]
+        #range["heat_damage", [0 1000], false, true]
+        #option["platform_materials", ["grass" "snow" "slime" "steel" "wood"], true]
+    ]
+}

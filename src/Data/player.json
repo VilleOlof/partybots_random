@@ -1,0 +1,55 @@
+{
+    "high_jump": {
+        "multiplier": {
+            "range": [1, 10],
+            "single": false,
+            "decimal": true
+        }
+    },
+    "low_jump": {
+        "multiplier": {
+            "range": [0, 1],
+            "single": false,
+            "decimal": true
+        }
+    },
+    "modifier_swap": {},
+    "normalize": {},
+    "petrify": {
+        "duration": {
+            "range": [0, 1000],
+            "single": false,
+            "decimal": false
+        },
+        "immune": true
+    },
+    "grow": {
+        "grow": {
+            "range": [1, 8],
+            "single": false,
+            "decimal": true
+        }
+    },
+    "shrink": {
+        "shrink": {
+            "range": [0.2, 1],
+            "single": false,
+            "decimal": false
+        }
+    },
+    "slow_down": {
+        "slow": {
+            "range": [0, 1],
+            "single": false,
+            "decimal": true
+        }
+    },
+    "speed_up": {
+        "speed": {
+            "range": [1, 4],
+            "single": false,
+            "decimal": true
+        }
+    },
+    "teleport": {}
+}

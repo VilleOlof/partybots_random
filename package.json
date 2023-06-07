@@ -1,0 +1,17 @@
+{
+  "name": "partybots_random",
+  "version": "1.0.0",
+  "description": "creates random party bots gamemodes",
+  "main": "src/index.ts",
+  "scripts": {
+    "run": "npx tsc && node dist/index.js",
+    "watch": "npx tsc --watch",
+    "only:run": "node dist/index.js"
+  },
+  "author": "Olof",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^20.2.5",
+    "typescript": "^5.1.3"
+  }
+}
