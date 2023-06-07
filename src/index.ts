@@ -1,8 +1,32 @@
 import fs from "fs";
 import { Config } from './config';
 import { Events } from './events';
-import { Mango } from './Mango';
 import { Random } from './Random';
+
+/**
+ * (multiple values are separated by commas)
+ * Party gamemode file structure:
+ * #{data version}
+ * [eventcategory.event chance]
+ * eventoption eventvalues...
+ * ...
+ * [general]
+ * generaloption generalvalues... 
+ * ...
+ * [info]
+ * name "name"
+ * desc "description"
+ * {variantname, variantdesc, variantchance}
+ * [eventcategory.event chance]
+ * eventoption eventvalues...
+ * ...
+ * [?eventcategory.event chance] (initial events have ? at start)
+ * eventoption eventvalues...
+ * ...
+ * [general]
+ * generaloption generalvalues... 
+ * ...
+ */
 
 Events.LoadMango();
 const Seed = Random.GetStringSeed(Config.seed, 16);
@@ -16,15 +40,15 @@ function AddInfo(string: string): string {
 
     const info = Events.GetInfo();
 
-    string += `name "${info.name} ${Seed}"\n`;
-    string += `desc "${info.desc}"\n`;
+    string += `name "${info.name}"\n`;
+    string += `desc "${info.desc} (${Seed})"\n`;
 
     return string;
 }
 
 function AddVariants(string: string): string {
     for (let i = 0; i < Config.variants; i++) {
-        string += `{"Variant ${i+1}", "<Insert Description Here>"${Config.equalVariantWeight ? "" : `, ${Events.GetRandomChance()}`}}\n`;
+        string += `{"Variant ${i+1}", "Seed: ${Seed}"${Config.equalVariantWeight ? "" : `, ${Events.GetRandomChance()}`}}\n`;
 
         string = AddEvents(string, false);
         string = AddEvents(string, true);

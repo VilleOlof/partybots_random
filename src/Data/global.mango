@@ -72,7 +72,7 @@
         #range["velocity", [0.2 15], false, true]
     ]
     shrink: [
-        #range["shrink", [0 40], false, true]
+        #range["shrink", [2 20], false, true]
         #range["time", [0.2 60], false, true]
     ]
     teleport: []

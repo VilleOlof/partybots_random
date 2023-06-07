@@ -1,11 +1,12 @@
 import fs from "fs";
+import { Mango } from "./Mango";
 
 export let Config: config = LoadConfig();
 
 export function LoadConfig(): config {
-    const path = "config.json";
+    const path = "config.mango";
     const configFile = fs.readFileSync(path, "utf8");
-    return JSON.parse(configFile) as config;
+    return Mango.parse(configFile) as config;
 }
 
 export type config = {

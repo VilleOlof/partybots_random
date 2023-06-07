@@ -82,7 +82,7 @@ export namespace Events {
     }
 
     export function GetRandomChance(): number {
-        const decreased: number = Config.decreasedChanceEvents ? 4 : 0;
+        const decreased: number = Config.decreasedChanceEvents ? 5 : 0;
         return Random.RandomizeBetween(Meta.chanceRange[0], Meta.chanceRange[1] - decreased, false);
     }
 
@@ -90,49 +90,61 @@ export namespace Events {
         str += `${event.param.name} `;
 
         if (event.param.type == "range") {
-            if (event.range == undefined || event.range == undefined || event.decimal == undefined) throw new Error("Range option is missing a parameter");
-
-            if (event.single == true) {
-                str += `${Random.RandomizeBetween(event.range[0], event.range[1], event.decimal)}`;
-            }
-            else if (event.single == false) {
-                let random_one = Random.RandomizeBetween(event.range[0], event.range[1], event.decimal);
-                let random_two = Random.RandomizeBetween(event.range[0], event.range[1], event.decimal);
-
-                if (random_one > random_two) {
-                    let temp = random_one;
-                    random_one = random_two;
-                    random_two = temp;
-                }
-
-                str += `${random_one}, ${random_two}`;
-            }
+            str = Range(str, event);
         }
         else if (event.param.type == "boolean") {
             str += `${Random.RandomizeBoolean()}`;
         }
         else if (event.param.type == "option") {
-            if (event.options == undefined || event.nullable == undefined) throw new Error("Option event is missing a parameter");
-
-            const randomAmount = Random.RandomizeBetween(0, event.options.length - 1, false);
-            let gottenAny: boolean = false;
-            for (let i = 0; i < randomAmount; i++) {
-                str += event.options[Random.RandomizeBetween(0, event.options.length - 1, false)];
-                if (i !== randomAmount - 1) {
-                    str += ", ";
-                }
-                gottenAny = true;
-            }
-        
-            if (randomAmount == 0 && event.nullable) {
-                str += null;
-            }
-            else if (!gottenAny && !event.nullable) {
-                str += event.options[Random.RandomizeBetween(0, event.options.length - 1, false)];
-            }
+            str = Option(str, event);
         }
 
         str += "\n";
+
+        return str;
+    }
+
+    function Range(str: string, event: event): string {
+        if (event.range == undefined || event.range == undefined || event.decimal == undefined) throw new Error("Range option is missing a parameter");
+
+        if (event.single == true) {
+            str += `${Random.RandomizeBetween(event.range[0], event.range[1], event.decimal)}`;
+        }
+        else if (event.single == false) {
+            let random_one = Random.RandomizeBetween(event.range[0], event.range[1], event.decimal);
+            let random_two = Random.RandomizeBetween(event.range[0], event.range[1], event.decimal);
+
+            if (random_one > random_two) {
+                let temp = random_one;
+                random_one = random_two;
+                random_two = temp;
+            }
+
+            str += `${random_one}, ${random_two}`;
+        }
+
+        return str;
+    }
+
+    function Option(str: string, event: event): string {
+        if (event.options == undefined || event.nullable == undefined) throw new Error("Option event is missing a parameter");
+
+        const randomAmount = Random.RandomizeBetween(0, event.options.length - 1, false);
+        let gottenAny: boolean = false;
+        for (let i = 0; i < randomAmount; i++) {
+            str += event.options[Random.RandomizeBetween(0, event.options.length - 1, false)];
+            if (i !== randomAmount - 1) {
+                str += ", ";
+            }
+            gottenAny = true;
+        }
+    
+        if (randomAmount == 0 && event.nullable) {
+            str += null;
+        }
+        else if (!gottenAny && !event.nullable) {
+            str += event.options[Random.RandomizeBetween(0, event.options.length - 1, false)];
+        }
 
         return str;
     }
