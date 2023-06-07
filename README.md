@@ -6,9 +6,10 @@ Randomizes every setting and event (including variants) in a gamemode.
 
 *Requires Node.JS*  
 - Clone Repo  
-- Run install.bat  
+- Run `install.bat`  
 
 And to generate a new random gamemode, run `generate.bat`  
+By default, generated files will be at `auto-generated_gamemode.party`
 
 ## Creating Data Profiles
 
