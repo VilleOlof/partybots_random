@@ -1,12 +1,9 @@
 import { Config } from './config';
-import { Events, GetRandomChance } from './events';
-import info from './Data/info.json';
-import { Mango } from './Mango'
+import { Events } from './events';
+import { Mango } from './Mango';
 import fs from "fs";
 
-const playerTestMango = fs.readFileSync("src/Data/meta.mango", "utf8");
-const mango = Mango.parse(playerTestMango);
-console.log(JSON.stringify(mango, null, 4))
+Events.LoadMango();
 
 function AddDataVersionNumber(string: string): string {
     return string += "#0\n"; 
@@ -14,6 +11,9 @@ function AddDataVersionNumber(string: string): string {
 
 function AddInfo(string: string): string {
     string += "[info]\n";
+
+    const infoFile = fs.readFileSync("src/Data/info.mango", "utf8");
+    const info = Mango.parse(infoFile) as Events.info;
 
     string += `name "${info.name}"\n`;
     string += `desc "${info.desc}"\n`;
@@ -23,27 +23,27 @@ function AddInfo(string: string): string {
 
 function AddVariants(string: string): string {
     for (let i = 0; i < Config.variants; i++) {
-        string += `{"Variant ${i+1}", "<Insert Description Here>"${Config.equalVariantWeight ? "" : `, ${GetRandomChance()}`}}\n`;
+        string += `{"Variant ${i+1}", "<Insert Description Here>"${Config.equalVariantWeight ? "" : `, ${Events.GetRandomChance()}`}}\n`;
 
         string = AddEvents(string, false);
         string = AddEvents(string, true);
-        string = Events.GeneralEvents(string);
+        string = Events.General(string);
     }
 
     return string;
 }
 
 function AddEvents(string: string, initial: boolean): string {
-    string = Events.PlayerEvents(string, initial);
-    string = Events.PlatformEvents(string, initial);
-    string = Events.GlobalEvents(string, initial);
+    string = Events.Player(string, initial);
+    string = Events.Platform(string, initial);
+    string = Events.Global(string, initial);
     return string;
 }
 
 let output = "";
 output = AddDataVersionNumber(output);
 output = AddEvents(output, false);
-output = Events.GeneralEvents(output);
+output = Events.General(output);
 output = AddInfo(output);
 output = AddVariants(output);
 

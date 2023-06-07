@@ -14,11 +14,15 @@ export type config = {
     equalVariantWeight: boolean,
     divideMaxValue: number,
     outPath: string,
+    ignoredEvents: string[],
+    seed?: string
 }
 export const defaultConfig: config = {
     variants: 2,
     alwaysEnableEvents: false,
     equalVariantWeight: false,
     divideMaxValue: 1,
-    outPath: "./auto-generated_gamemode.party"
+    outPath: "./auto-generated_gamemode.party",
+    ignoredEvents: [],
+    seed: undefined
 }

@@ -1,200 +1,229 @@
 import fs from "fs";
-
-import player from "./Data/player.json";
-import platform from "./Data/platform.json";
-import global from "./Data/global.json";
-import general from "./Data/general.json";
-import meta from "./Data/meta.json";
+import crypto from "crypto";
 import { Config } from "./config";
+import { Mango } from "./Mango";
 
-function RandomizeBetween(min: number, max: number, decimal: boolean, divide: boolean = false): number {
-    let divideBy = 1
-    if (divide) divideBy = Config.divideMaxValue;
-    if (!decimal) return Math.floor(Math.random() * ((max / divideBy) - min + 1) + min);
-    else return Math.random() * ((max / divideBy) - min) + min;
-}
+export namespace Random {
 
-function RandomizeBoolean(): boolean {
-    return RandomizeBetween(0, 1, false) === 1;
-}
+    let seed: () => number = GetSeed(Config.seed);
 
-function RandomizeOptions(optionsData: any): string {
-    const randomAmount = RandomizeBetween(0, optionsData.options.length - 1, optionsData.decimal);
-    let out: string = "";
-    for (let i = 0; i < randomAmount; i++) {
-        out += optionsData.options[RandomizeBetween(0, optionsData.options.length - 1, optionsData.decimal)];
-        if (i !== randomAmount - 1) {
-            out += ", ";
+    export function RandomizeBetween(min: number, max: number, decimal: boolean, divide: boolean = false): number {
+        let divideBy = 1
+        if (divide) divideBy = Config.divideMaxValue;
+        if (!decimal) return Math.floor(GetRandomNumber(seed)* ((max / divideBy) - min + 1) + min);
+        else return GetRandomNumber(seed) * ((max / divideBy) - min) + min;
+    }
+    
+    export function RandomizeBoolean(): boolean {
+        return RandomizeBetween(0, 1, false) === 1;
+    }
+    
+    export function GetSeed(string?: string | undefined): () => number {
+        string = string ?? crypto.randomBytes(64).toString("hex");
+        return xfnv1a(string);
+    }
+    
+    export function GetRandomNumber(seed: () => number): number {
+        return sfc32(seed(), seed(), seed(), seed());
+    }
+    
+    // https://stackoverflow.com/questions/521295/seeding-the-random-number-generator-in-javascript
+    function xfnv1a(str: string): () => number {
+        for (var i = 0, h = 2166136261 >>> 0; i < str.length; i++) {
+            // Math.imul() allows for 32-bit integer multiplication with C-like semantics
+            h = Math.imul(h ^ str.charCodeAt(i), 16777619);
         }
+        return function() {
+            h += h << 13;
+            h ^= h >>> 7;
+            h += h << 3;
+            h ^= h >>> 17;
+            return (h += h << 5) >>> 0;
+        };
     }
-
-    if (out === "" && optionsData.nullable) {
-        out += null;
+    
+    function sfc32(a: number, b: number, c: number, d:number): number {
+        a >>>= 0; b >>>= 0; c >>>= 0; d >>>= 0; 
+        var t = (a + b) | 0;
+        a = b ^ b >>> 9;
+        b = c + (c << 3) | 0;
+        c = (c << 21 | c >>> 11);
+        d = d + 1 | 0;
+        t = t + d | 0;
+        c = c + t | 0;
+        return (t >>> 0) / 4294967296;  
     }
-    else if (out === "" && !optionsData.nullable) {
-        out += optionsData.options[RandomizeBetween(0, optionsData.options.length - 1, optionsData.decimal)];
-    }
-
-    return out;
-}
-
-export function GetRandomChance(): number {
-    return RandomizeBetween(meta.chanceRange[0], meta.chanceRange[1], false);
 }
 
 export namespace Events {
 
-    export function PlayerEvents(stringIn: string, initial: boolean = false): string {
-        for (const [eventName, options] of Object.entries(player)) {
-
-            //Event Title
-            stringIn += "[";
-            if (!RandomizeBoolean() && !Config.alwaysEnableEvents) { //Enabled or disabled
-                stringIn += "!"
-            }
-            stringIn += initial ? "?" : "";
-            stringIn += "player.";
-            stringIn += `${eventName} ${GetRandomChance()}]\n`;
-
-            //Options
-            for (const [optionName, optionData] of Object.entries(options)) {
-                stringIn += optionName;
-                if (typeof optionData === "boolean") {
-                    stringIn += RandomizeBoolean() ? " true" : " false";
-                }
-                else if (optionData.single) {
-                    const randomValue = RandomizeBetween(optionData.range[0], optionData.range[1], optionData.decimal, true);
-                    stringIn += ` ${randomValue}`;
-                }
-                else if (!optionData.single) {
-                    let random_one = RandomizeBetween(optionData.range[0], optionData.range[1], optionData.decimal, true);
-                    let random_two = RandomizeBetween(optionData.range[0], optionData.range[1], optionData.decimal, true);
-
-                    if (random_two < random_one) {
-                        const temp = random_one;
-                        random_one = random_two;
-                        random_two = temp;
-                    }
-
-                    stringIn += ` ${random_one}, ${random_two}`;
-                }
-
-                stringIn += "\n";
-            }
-        }
-
-        return stringIn;
+    export type base = {
+        name: string,
+        type: "range" | "boolean" | "option"
     }
 
-    export function PlatformEvents(stringIn: string, initial: boolean = false): string {
-        for (const [eventName, options] of Object.entries(platform)) {
-            //Event Title
-            stringIn += "[";
-            if (!RandomizeBoolean() && !Config.alwaysEnableEvents) { //Enabled or disabled
-                stringIn += "!"
-            }
-            stringIn += initial ? "?" : "";
-            stringIn += "platform.";
-            stringIn += `${eventName} ${GetRandomChance()}]\n`;
+    export type event = {
+        range?: [number, number],
+        single?: boolean,
+        decimal?: boolean,
 
-            //Options
-            for (const [optionName, optionData] of Object.entries(options)) {
-                stringIn += optionName;
-                if (typeof optionData === "boolean") {
-                    stringIn += RandomizeBoolean() ? " true" : " false";
-                } /* @ts-ignore */
-                else if (optionData.multipleChoice) { /* @ts-ignore */
-                    stringIn += ` ${RandomizeOptions(optionData)}`;
-                } /* @ts-ignore */
-                else if (optionData.single) { /* @ts-ignore */
-                    const randomValue = RandomizeBetween(optionData.range[0], optionData.range[1], optionData.decimal, true);
-                    stringIn += ` ${randomValue}`;
-                } /* @ts-ignore */
-                else if (!optionData.single) { /* @ts-ignore */
-                    let random_one = RandomizeBetween(optionData.range[0], optionData.range[1], optionData.decimal, true); /* @ts-ignore */
-                    let random_two = RandomizeBetween(optionData.range[0], optionData.range[1], optionData.decimal, true);
+        options?: string[],
+        nullable?: boolean,
 
-                    if (random_two < random_one) {
-                        const temp = random_one;
-                        random_one = random_two;
-                        random_two = temp;
-                    }
-
-                    stringIn += ` ${random_one}, ${random_two}`;
-                }
-
-                stringIn += "\n";
-            }
-        }
-
-        return stringIn;
+        param: base
     }
 
-    export function GlobalEvents(stringIn: string, initial: boolean = false): string {
-        for (const [eventName, options] of Object.entries(global)) {
-
-            //Event Title
-            stringIn += "[";
-            if (!RandomizeBoolean() && !Config.alwaysEnableEvents) { //Enabled or disabled
-                stringIn += "!"
-            }
-            stringIn += initial ? "?" : "";
-            stringIn += "global.";
-            stringIn += `${eventName} ${GetRandomChance()}]\n`;
-
-            //Options
-            for (const [optionName, optionData] of Object.entries(options)) {
-                stringIn += optionName;
-                if (typeof optionData === "boolean") {
-                    stringIn += RandomizeBoolean() ? " true" : " false";
-                }
-                else if (optionData.multipleChoice) {
-                    stringIn += ` ${RandomizeOptions(optionData)}`;
-                }
-                else if (optionData.single) {
-                    const randomValue = RandomizeBetween(optionData.range[0], optionData.range[1], optionData.decimal, true);
-                    stringIn += ` ${randomValue}`;
-                }
-                else if (!optionData.single) {
-                    let random_one = RandomizeBetween(optionData.range[0], optionData.range[1], optionData.decimal, true);
-                    let random_two = RandomizeBetween(optionData.range[0], optionData.range[1], optionData.decimal, true);
-
-                    if (random_two < random_one) {
-                        const temp = random_one;
-                        random_one = random_two;
-                        random_two = temp;
-                    }
-
-                    stringIn += ` ${random_one}, ${random_two}`;
-                }
-
-                stringIn += "\n";
-            }
-        }
-
-        return stringIn;
+    export type meta = {
+        chanceRange: [number, number]
     }
 
-    export function GeneralEvents(stringIn: string): string {
-        stringIn += "[general]\n";
+    export type info = {
+        name: string,
+        desc: string
+    }
 
-        for (const [eventName, options] of Object.entries(general)) {
-            stringIn += `${eventName} `;
+    export type eventCategory = "player" | "platform" | "global";
 
-            if (typeof options === "boolean") {
-                stringIn += RandomizeBoolean() ? "true" : "false";
-            } /* @ts-ignore */
-            else if (options.multipleChoice) {
-                stringIn += RandomizeOptions(options);
+    let PlayerEvents: {[key: string]: event[]} = {};
+    let PlatformEvents: {[key: string]: event[]} = {};
+    let GlobalEvents: {[key: string]: event[]} = {};
+    let GeneralEvents: {[key: string]: event[]} = {};
+    
+    let Meta: meta = { chanceRange: [0, 0] };
+    let Info: info = { name: "", desc: ""};
+
+    const mangoFiles: string = "src/Data";
+    export function LoadMango(): void {
+        const playerFile = fs.readFileSync(`${mangoFiles}/player.mango`, "utf8");
+        PlayerEvents = Mango.parse(playerFile);
+        
+        const platformFile = fs.readFileSync(`${mangoFiles}/platform.mango`, "utf8");
+        PlatformEvents = Mango.parse(platformFile);
+
+        const globalFile = fs.readFileSync(`${mangoFiles}/global.mango`, "utf8");
+        GlobalEvents = Mango.parse(globalFile);
+
+        const generalFile = fs.readFileSync(`${mangoFiles}/general.mango`, "utf8");
+        GeneralEvents = Mango.parse(generalFile);
+
+        const metaFile = fs.readFileSync(`${mangoFiles}/meta.mango`, "utf8");
+        Meta = Mango.parse(metaFile);
+
+        const infoFile = fs.readFileSync(`${mangoFiles}/info.mango`, "utf8");
+        Info = Mango.parse(infoFile);
+    }
+
+    function Start(str: string, init: boolean, eventCategory: eventCategory): string {
+        str += "[";
+        str += Random.RandomizeBoolean() == true && Config.alwaysEnableEvents ? "" : "!";
+        str += init ? "?" : "";
+        str += eventCategory;
+        str += ".";
+        return str;
+    }
+
+    function End(str: string): string {
+        str += "]\n";
+        return str;
+    }
+
+    export function GetRandomChance(): number {
+        return Random.RandomizeBetween(Meta.chanceRange[0], Meta.chanceRange[1], false);
+    }
+
+    function HandleOptions(str: string, event: event): string {
+        str += `${event.param.name} `;
+
+        if (event.param.type == "range") {
+            if (event.range == undefined || event.range == undefined || event.decimal == undefined) throw new Error("Range option is missing a parameter");
+
+            if (event.single == true) {
+                str += `${Random.RandomizeBetween(event.range[0], event.range[1], event.decimal)}`;
             }
-            else { /* @ts-ignore */
-                const randomValue = RandomizeBetween(options.range[0], options.range[1], options.decimal);
-                stringIn += `${randomValue}`;
-            }
+            else if (event.single == false) {
+                let random_one = Random.RandomizeBetween(event.range[0], event.range[1], event.decimal);
+                let random_two = Random.RandomizeBetween(event.range[0], event.range[1], event.decimal);
 
-            stringIn += "\n";
+                if (random_one > random_two) {
+                    let temp = random_one;
+                    random_one = random_two;
+                    random_two = temp;
+                }
+
+                str += `${random_one}, ${random_two}`;
+            }
+        }
+        else if (event.param.type == "boolean") {
+            str += `${Random.RandomizeBoolean()}`;
+        }
+        else if (event.param.type == "option") {
+            if (event.options == undefined || event.nullable == undefined) throw new Error("Option event is missing a parameter");
+
+            const randomAmount = Random.RandomizeBetween(0, event.options.length - 1, false);
+            let gottenAny: boolean = false;
+            for (let i = 0; i < randomAmount; i++) {
+                str += event.options[Random.RandomizeBetween(0, event.options.length - 1, false)];
+                if (i !== randomAmount - 1) {
+                    str += ", ";
+                }
+                gottenAny = true;
+            }
+        
+            if (randomAmount == 0 && event.nullable) {
+                str += null;
+            }
+            else if (!gottenAny && !event.nullable) {
+                str += event.options[Random.RandomizeBetween(0, event.options.length - 1, false)];
+            }
         }
 
-        return stringIn;
+        str += "\n";
+
+        return str;
+    }
+
+    function MainHandle(str:string, init: boolean, events: {[key: string]: event[]}, category: eventCategory): string {
+        for (const [eventName, options] of Object.entries(events)) {
+            if (Config.ignoredEvents.includes(`${category}.${eventName}`)) continue;
+            str = Start(str, init, category);
+
+            str += eventName;
+            str += ` ${GetRandomChance()}`;
+
+            str = End(str);
+            
+            for (let i = 0; i < options.length; i++) {
+                const event = options[i];
+                str = HandleOptions(str, event);
+            }
+        }
+
+        return str;
+    }
+
+    export function Player(str: string, init: boolean): string {
+        return MainHandle(str, init, PlayerEvents, "player");
+    }
+
+    export function Platform(str: string, init: boolean): string {
+        return MainHandle(str, init, PlatformEvents, "platform");
+    }
+
+    export function Global(str: string, init: boolean): string {
+        return MainHandle(str, init, GlobalEvents, "global");
+    }
+
+    export function General(str: string): string {
+        str += "[general]\n";
+
+        const general = GeneralEvents["general"];
+        for (let i = 0; i <general.length; i++) {
+            const event = general[i];
+            if (Config.ignoredEvents.includes(`general.${event.param.name}`)) continue;
+            
+            str = HandleOptions(str, event);
+        }
+
+        return str;
     }
 }

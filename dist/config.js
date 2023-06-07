@@ -17,5 +17,7 @@ exports.defaultConfig = {
     alwaysEnableEvents: false,
     equalVariantWeight: false,
     divideMaxValue: 1,
-    outPath: "./auto-generated_gamemode.party"
+    outPath: "./auto-generated_gamemode.party",
+    ignoredEvents: [],
+    seed: undefined
 };
