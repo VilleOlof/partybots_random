@@ -1,3 +1,7 @@
+
+# Output and modules
 dist/
 node_modules/
-auto-generated_gamemode.party
+
+# Auto generated
+/auto-generated_gamemode.party
