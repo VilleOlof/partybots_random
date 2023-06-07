@@ -4,7 +4,7 @@
   "description": "creates random party bots gamemodes",
   "main": "src/index.ts",
   "scripts": {
-    "run": "npx tsc && node dist/index.js",
+    "compile:run": "npx tsc && node dist/index.js",
     "watch": "npx tsc --watch",
     "only:run": "node dist/index.js"
   },
