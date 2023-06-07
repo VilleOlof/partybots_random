@@ -1,0 +1,151 @@
+{
+    -- Param type can be any of the following: range, boolean, option
+    -- [string, string]
+    #base[$name $param_type] = {
+        name: $name
+        type: $param_type
+    }
+
+    -- [string, number[], boolean, boolean]
+    #range[$name $range $single $decimal] = {
+        range: $range
+        single: $single
+        decimal: $decimal
+        param: #base[$name, "range"]
+    }
+
+    -- [string]
+    #boolean[$name] = {
+        param: #base[$name, "boolean"]
+    }
+
+    -- [string, string[], boolean]
+    #option[$name $options $nullable] = {
+        options: $options
+        nullable: $nullable
+        param: #base[$name, "option"]
+    }
+
+    -- Events
+    barrel: [
+        #boolean["destructive"]
+        #range["radius", [0.1 10], true, true]
+        #range["damage", [0.1 500], true, false]
+    ]
+    bridge: []
+    conveyor: [
+        #range["velocity", [0.1 5], false, true]
+    ]
+    corner_cut: [
+        #range["radius", [0.1 5.54], true, true]
+    ]
+    crate: []
+    grass: []
+    grow: [
+        #range["grow", [0 40], false, true]
+        #range["time", [0.2 60], false, true]
+    ]
+    healing: [
+        #range["healing", [0 300], true, false]
+    ]
+    health_pack: [
+        #range["healing", [0 300], true, false]
+    ]
+    hole: [
+        #range["radius", [0.1 8.54], true, true]
+    ]
+    infinite_grow: [
+        #range["velocity", [0 0.2], false, true]
+    ]
+    infinite_shrink: [
+        #range["velocity", [0 6.1], false, true]
+        #range["min_size", [0 6.1], true, true]
+    ]
+    jump: [
+        #range["multiplier", [0 10], false, true]
+    ]
+    lightning: [
+        #range["damage", [0 150], true, false]
+        #range["radius", [0 10], false, true]
+    ]
+    link: [
+        #boolean["one_way"]
+    ]
+    lower: [
+        #range["distance", [0 25], false, true]
+        #range["time", [0.2 60], false, true]
+    ]
+    lucky_box: [
+        #range["events", [0 8], true, false]
+    ]
+    merge: [
+        #range["velocity", [0 15], false, true]
+    ]
+    mine: [
+        #range["radius", [0.1 10], true, true]
+        #range["damage", [0 175], true, false]
+        #range["detonation", [0 5], true, true]
+    ]
+    move_in_circle: [
+        #option["direction", ["clock" "anticlock" "both"], false]
+        #range["velocity", [0 15], false, true]
+    ]
+    move_to_center: [
+        #range["velocity", [0 15], false, true]
+        #range["radius", [0 20], false, true]
+    ]
+    move_to_edge: [
+        #range["velocity", [0 15], false, true]
+        #range["radius", [0 50], false, true]
+    ]
+    multiplier: [
+        #range["multiplier", [2 8], true, false]
+    ]
+    normalize: [
+        #range["time", [0.2 10], false, true]
+    ]
+    pillar: []
+    random: [
+        #range["events", [0 8], true, false]
+    ]
+    rise: [
+        #range["distance", [0 55], false, true]
+        #range["time", [0.2 60], false, true]
+    ]
+    rotate: [
+        #range["rotation", [0 360], false, true]
+        #option["axes", ["x" "y" "z"], true]
+        #range["velocity", [0 15], false, true]
+    ]
+    shrink: [
+        #range["shrink", [0 40], false, true]
+        #range["time", [0.2 60], false, true]
+    ]
+    slime: []
+    snow: []
+    spin: [
+        #range["velocity", [0.2 15], false, true]
+        #option["axes", ["x" "y" "z"], true]
+    ]
+    spinner: [
+        #range["speed", [0 180], false, true]
+        #range["electric_damage", [0 150], true, false]
+        #option["types", ["normal" "electric"], true]
+    ]
+    split: []
+    steel: []
+    time_bomb: [
+        #boolean["destructive"]
+        #boolean["show_timer"]
+        #option["types", ["normal" "sticky"], true]
+        #range["time", [0 150], false, true]
+        #range["damage", [0 175], true, false]
+        #range["radius", [0.1 10], true, true]
+    ]
+    tree: []
+    vertical_grow: [
+        #range["grow", [0 20], false, true]
+        #range["time", [0.2 30], false, true]
+    ]
+    wood: []
+}

@@ -1,9 +1,11 @@
+import fs from "fs";
 import { Config } from './config';
 import { Events } from './events';
 import { Mango } from './Mango';
-import fs from "fs";
+import { Random } from './Random';
 
 Events.LoadMango();
+const Seed = Random.GetStringSeed(Config.seed, 16);
 
 function AddDataVersionNumber(string: string): string {
     return string += "#0\n"; 
@@ -12,10 +14,9 @@ function AddDataVersionNumber(string: string): string {
 function AddInfo(string: string): string {
     string += "[info]\n";
 
-    const infoFile = fs.readFileSync("src/Data/info.mango", "utf8");
-    const info = Mango.parse(infoFile) as Events.info;
+    const info = Events.GetInfo();
 
-    string += `name "${info.name}"\n`;
+    string += `name "${info.name} ${Seed}"\n`;
     string += `desc "${info.desc}"\n`;
 
     return string;
@@ -40,12 +41,16 @@ function AddEvents(string: string, initial: boolean): string {
     return string;
 }
 
-let output = "";
-output = AddDataVersionNumber(output);
-output = AddEvents(output, false);
-output = Events.General(output);
-output = AddInfo(output);
-output = AddVariants(output);
+function GetFullPartyFile(): string {
+    let output = "";
+    output = AddDataVersionNumber(output);
+    output = AddEvents(output, false);
+    output = Events.General(output);
+    output = AddInfo(output);
+    output = AddVariants(output);
 
+    return output;
+}
 
+const output = GetFullPartyFile();
 fs.writeFileSync(Config.outPath, output);

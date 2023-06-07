@@ -1,0 +1,55 @@
+{
+    -- Param type can be any of the following: range, boolean, option
+    -- [string, string]
+    #base[$name $param_type] = {
+        name: $name
+        type: $param_type
+    }
+
+    -- [string, number[], boolean, boolean]
+    #range[$name $range $single $decimal] = {
+        range: $range
+        single: $single
+        decimal: $decimal
+        param: #base[$name, "range"]
+    }
+
+    -- [string]
+    #boolean[$name] = {
+        param: #base[$name, "boolean"]
+    }
+
+    -- [string, string[], boolean]
+    #option[$name $options $nullable] = {
+        options: $options
+        nullable: $nullable
+        param: #base[$name, "option"]
+    }
+
+    -- Events
+    high_jump: [
+        #range["multiplier", [0 10], false, true]
+    ]
+    low_jump: [
+        #range["multiplier", [0 1] false, true]
+    ]
+    modifier_swap: []
+    normalize: []
+    petrify: [
+        #range["duration", [0 1000], false, false]
+        #boolean["immune"]
+    ]
+    grow: [
+        #range["grow", [0 8], false, true]
+    ]
+    shrink: [
+        #range["shrink", [0.2 1], false, false]
+    ]
+    slow_down: [
+        #range["slow", [0.25 1], false, true]
+    ]
+    speed_up: [
+        #range["speed", [1 4], false, true]
+    ]
+    teleport: []
+}

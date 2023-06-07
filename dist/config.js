@@ -19,5 +19,7 @@ exports.defaultConfig = {
     divideMaxValue: 1,
     outPath: "./auto-generated_gamemode.party",
     ignoredEvents: [],
+    decreasedChanceEvents: [],
+    dataProfile: "",
     seed: undefined
 };

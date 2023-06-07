@@ -15,6 +15,8 @@ export type config = {
     divideMaxValue: number,
     outPath: string,
     ignoredEvents: string[],
+    decreasedChanceEvents: string[]
+    dataProfile: string,
     seed?: string
 }
 export const defaultConfig: config = {
@@ -24,5 +26,7 @@ export const defaultConfig: config = {
     divideMaxValue: 1,
     outPath: "./auto-generated_gamemode.party",
     ignoredEvents: [],
+    decreasedChanceEvents: [],
+    dataProfile: "",
     seed: undefined
 }

@@ -1,59 +1,7 @@
 import fs from "fs";
-import crypto from "crypto";
 import { Config } from "./config";
 import { Mango } from "./Mango";
-
-export namespace Random {
-
-    let seed: () => number = GetSeed(Config.seed);
-
-    export function RandomizeBetween(min: number, max: number, decimal: boolean, divide: boolean = false): number {
-        let divideBy = 1
-        if (divide) divideBy = Config.divideMaxValue;
-        if (!decimal) return Math.floor(GetRandomNumber(seed)* ((max / divideBy) - min + 1) + min);
-        else return GetRandomNumber(seed) * ((max / divideBy) - min) + min;
-    }
-    
-    export function RandomizeBoolean(): boolean {
-        return RandomizeBetween(0, 1, false) === 1;
-    }
-    
-    export function GetSeed(string?: string | undefined): () => number {
-        string = string ?? crypto.randomBytes(64).toString("hex");
-        return xfnv1a(string);
-    }
-    
-    export function GetRandomNumber(seed: () => number): number {
-        return sfc32(seed(), seed(), seed(), seed());
-    }
-    
-    // https://stackoverflow.com/questions/521295/seeding-the-random-number-generator-in-javascript
-    function xfnv1a(str: string): () => number {
-        for (var i = 0, h = 2166136261 >>> 0; i < str.length; i++) {
-            // Math.imul() allows for 32-bit integer multiplication with C-like semantics
-            h = Math.imul(h ^ str.charCodeAt(i), 16777619);
-        }
-        return function() {
-            h += h << 13;
-            h ^= h >>> 7;
-            h += h << 3;
-            h ^= h >>> 17;
-            return (h += h << 5) >>> 0;
-        };
-    }
-    
-    function sfc32(a: number, b: number, c: number, d:number): number {
-        a >>>= 0; b >>>= 0; c >>>= 0; d >>>= 0; 
-        var t = (a + b) | 0;
-        a = b ^ b >>> 9;
-        b = c + (c << 3) | 0;
-        c = (c << 21 | c >>> 11);
-        d = d + 1 | 0;
-        t = t + d | 0;
-        c = c + t | 0;
-        return (t >>> 0) / 4294967296;  
-    }
-}
+import { Random } from "./Random";
 
 export namespace Events {
 
@@ -94,16 +42,18 @@ export namespace Events {
 
     const mangoFiles: string = "src/Data";
     export function LoadMango(): void {
-        const playerFile = fs.readFileSync(`${mangoFiles}/player.mango`, "utf8");
+        const eventFiles =  Config.dataProfile != "" ? mangoFiles + `/${Config.dataProfile}` : mangoFiles;
+
+        const playerFile = fs.readFileSync(`${eventFiles}/player.mango`, "utf8");
         PlayerEvents = Mango.parse(playerFile);
         
-        const platformFile = fs.readFileSync(`${mangoFiles}/platform.mango`, "utf8");
+        const platformFile = fs.readFileSync(`${eventFiles}/platform.mango`, "utf8");
         PlatformEvents = Mango.parse(platformFile);
 
-        const globalFile = fs.readFileSync(`${mangoFiles}/global.mango`, "utf8");
+        const globalFile = fs.readFileSync(`${eventFiles}/global.mango`, "utf8");
         GlobalEvents = Mango.parse(globalFile);
 
-        const generalFile = fs.readFileSync(`${mangoFiles}/general.mango`, "utf8");
+        const generalFile = fs.readFileSync(`${eventFiles}/general.mango`, "utf8");
         GeneralEvents = Mango.parse(generalFile);
 
         const metaFile = fs.readFileSync(`${mangoFiles}/meta.mango`, "utf8");
@@ -111,6 +61,10 @@ export namespace Events {
 
         const infoFile = fs.readFileSync(`${mangoFiles}/info.mango`, "utf8");
         Info = Mango.parse(infoFile);
+    }
+
+    export function GetInfo(): info {
+        return Info;
     }
 
     function Start(str: string, init: boolean, eventCategory: eventCategory): string {
@@ -128,7 +82,8 @@ export namespace Events {
     }
 
     export function GetRandomChance(): number {
-        return Random.RandomizeBetween(Meta.chanceRange[0], Meta.chanceRange[1], false);
+        const decreased: number = Config.decreasedChanceEvents ? 4 : 0;
+        return Random.RandomizeBetween(Meta.chanceRange[0], Meta.chanceRange[1] - decreased, false);
     }
 
     function HandleOptions(str: string, event: event): string {
