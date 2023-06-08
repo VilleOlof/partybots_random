@@ -28,7 +28,7 @@ import { Random } from './Random';
  * ...
  */
 
-Events.LoadMango();
+Events.Load();
 const Seed = Random.GetStringSeed(Config.seed, 16);
 
 function AddDataVersionNumber(string: string): string {

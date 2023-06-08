@@ -30,31 +30,29 @@ export namespace Events {
         desc: string
     }
 
-    export type eventCategory = "player" | "platform" | "global";
+    const eventCategories = {
+        "player": "player",
+        "platform": "platform",
+        "global": "global"
+    } as const;
+    export type eventCategory = keyof typeof eventCategories;
 
-    let PlayerEvents: {[key: string]: event[]} = {};
-    let PlatformEvents: {[key: string]: event[]} = {};
-    let GlobalEvents: {[key: string]: event[]} = {};
-    let GeneralEvents: {[key: string]: event[]} = {};
-    
+    export type events = {[key: string]: event[]};
+    export type mango = events | meta | info;
+
     let Meta: meta = { chanceRange: [0, 0] };
     let Info: info = { name: "", desc: ""};
 
+    let mango: {[key: string]: mango}  = {};
     const mangoFiles: string = "src/Data";
-    export function LoadMango(): void {
-        const eventFiles =  Config.dataProfile != "" ? mangoFiles + `/${Config.dataProfile}` : mangoFiles;
+    const eventFilesToLoad: string[] = ["player", "platform", "global", "general"];
 
-        const playerFile = fs.readFileSync(`${eventFiles}/player.mango`, "utf8");
-        PlayerEvents = Mango.parse(playerFile);
-        
-        const platformFile = fs.readFileSync(`${eventFiles}/platform.mango`, "utf8");
-        PlatformEvents = Mango.parse(platformFile);
-
-        const globalFile = fs.readFileSync(`${eventFiles}/global.mango`, "utf8");
-        GlobalEvents = Mango.parse(globalFile);
-
-        const generalFile = fs.readFileSync(`${eventFiles}/general.mango`, "utf8");
-        GeneralEvents = Mango.parse(generalFile);
+    export function Load(): void {
+        eventFilesToLoad.forEach(file => {
+            const eventFiles =  Config.dataProfile != "" ? mangoFiles + `/${Config.dataProfile}` : mangoFiles;
+            const data = fs.readFileSync(`${eventFiles}/${file}.mango`, "utf8");
+            mango[file] = Mango.parse(data);
+        });
 
         const metaFile = fs.readFileSync(`${mangoFiles}/meta.mango`, "utf8");
         Meta = Mango.parse(metaFile);
@@ -169,22 +167,24 @@ export namespace Events {
     }
 
     export function Player(str: string, init: boolean): string {
-        return MainHandle(str, init, PlayerEvents, "player");
+        return MainHandle(str, init, <events>mango[eventCategories.player], eventCategories.player);
     }
 
     export function Platform(str: string, init: boolean): string {
-        return MainHandle(str, init, PlatformEvents, "platform");
+        return MainHandle(str, init, <events>mango[eventCategories.platform], eventCategories.platform);
     }
 
     export function Global(str: string, init: boolean): string {
-        return MainHandle(str, init, GlobalEvents, "global");
+        return MainHandle(str, init, <events>mango[eventCategories.global], eventCategories.global);
     }
 
     export function General(str: string): string {
         str += "[general]\n";
 
-        const general = GeneralEvents["general"];
-        for (let i = 0; i <general.length; i++) {
+        // Fix types for this. this works
+        /*@ts-ignore*/
+        const general = <event[]>mango["general"]["general"];
+        for (let i = 0; i < general.length; i++) {
             const event = general[i];
             if (Config.ignoredEvents.includes(`general.${event.param.name}`)) continue;
             
