@@ -1,6 +1,7 @@
 # Party Bots Gamemode Randomizer
 
 Randomizes every setting and event (including variants) in a gamemode.  
+Gamemode Example: [100 Random Variants](https://steamcommunity.com/sharedfiles/filedetails/?id=2987145105)  
 
 ## Install
 
