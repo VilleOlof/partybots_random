@@ -49,7 +49,7 @@
         #range["healing", [0 1000], true, false]
     ]
     health_pack: [
-        #range["healing", [0 1000], true, false]
+        #range["health", [0 1000], true, false]
     ]
     hole: [
         #range["radius", [0.1 8.54], true, true]
@@ -96,7 +96,7 @@
     ]
     move_to_edge: [
         #range["velocity", [0 15], false, true]
-        #range["radius", [0 50], false, true]
+        #range["distance", [0 50], false, true]
     ]
     multiplier: [
         #range["multiplier", [2 8], true, false]

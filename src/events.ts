@@ -67,7 +67,7 @@ export namespace Events {
 
     function Start(str: string, init: boolean, eventCategory: eventCategory): string {
         str += "[";
-        str += Random.RandomizeBoolean() == true && Config.alwaysEnableEvents ? "" : "!";
+        str += Random.RandomizeBoolean() == true || Config.alwaysEnableEvents ? "" : "!";
         str += init ? "?" : "";
         str += eventCategory;
         str += ".";

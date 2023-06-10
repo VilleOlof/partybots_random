@@ -1,5 +1,5 @@
 {
-    variants: 50,
+    variants: 100,
     alwaysEnableEvents: true,
     equalVariantWeight: true,
     divideMaxValue: 1,
@@ -7,5 +7,5 @@
     ignoredEvents: ["player.petrify" "general.fluid_height" "platform.infinite_shrink"],
     decreasedChanceEvents: ["platform.hole"],
     dataProfile: "tweaked",
-    seed: null
+    seed: "påsk"
 }
