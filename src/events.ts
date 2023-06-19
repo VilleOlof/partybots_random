@@ -53,7 +53,7 @@ export namespace Events {
             const data = fs.readFileSync(`${eventFiles}/${file}.mango`, "utf8");
             mango[file] = Mango.parse(data);
         });
-
+        
         const metaFile = fs.readFileSync(`${mangoFiles}/meta.mango`, "utf8");
         Meta = Mango.parse(metaFile);
 
@@ -81,6 +81,7 @@ export namespace Events {
 
     export function GetRandomChance(): number {
         const decreased: number = Config.decreasedChanceEvents ? 5 : 0;
+        
         return Random.RandomizeBetween(Meta.chanceRange[0], Meta.chanceRange[1] - decreased, false);
     }
 

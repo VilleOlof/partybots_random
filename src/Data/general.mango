@@ -56,5 +56,7 @@
         #boolean["fire_destructive"]
         #range["heat_damage", [0 1000], true, true]
         #option["platform_materials", ["grass" "snow" "slime" "steel" "wood"], true]
+        #range["platform_destroy_delay", [0 60], true, true]
+        #range["platform_destroy_time", [0.1 60], true, true]
     ]
 }
