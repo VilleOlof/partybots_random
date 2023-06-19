@@ -7,5 +7,5 @@
     ignoredEvents: ["player.petrify" "general.fluid_height" "platform.infinite_shrink"],
     decreasedChanceEvents: ["platform.hole"],
     dataProfile: "tweaked",
-    seed: "påsk"
+    seed: null
 }
